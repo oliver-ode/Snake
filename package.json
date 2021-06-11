@@ -1,5 +1,5 @@
 {
-    "name": "Tetris",
+    "name": "Snake",
     "scripts": {
         "start": "tsc && serve"
     },
