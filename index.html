@@ -8,20 +8,17 @@
 </head>
 <body>
 
-    <!-- <header>
-        <button id="reset">reset</button>
-        <button id="pause">pause</button>
-        <button id="start">start</button>
-        <span id="score"></span>
-        <br>
-    </header> -->
+    <header>
+        <span id="score" style="font-size: 30px;"></span>
+        <button id="reset">RESET</button>
+        <button id="start">START</button>
+    </header>
 
     <canvas width="800" height="800"></canvas>
 
     <script src="./build/Game.js"></script>
     <script>
         let game = new Game();
-        game.draw();
     </script>
 
 </body>

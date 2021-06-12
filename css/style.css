@@ -5,14 +5,44 @@ html, body {
 
 body {
     display: flex;
-    /* background-color: black; */
+    background-color: black;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    color: #93ecfa;
+}
+
+header {
+    width: 800px;
+    height: 50px;
+    font-size: 14px;
+    border: 1px solid pink;
+    border-bottom: none;
 }
 
 canvas {
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: auto;
-    margin-right: auto;
     display: block;
-    border: 1px solid #ddddff;
+    border: 1px solid pink;
+}
+
+header > button, header > span, header > div {
+    margin: 8px 8px 0 8px;
+}
+
+header > button {
+    display: block;        
+    float: right;
+    height: 30px;
+}
+
+header div {
+    margin-top: 76px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
+
+header > span {
+    float: left;
+    clear: left;
 }
