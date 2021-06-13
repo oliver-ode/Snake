@@ -6,18 +6,22 @@ enum Direction {
 }
 
 class Game {
+    // Drawing variables
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
 
+    // Constants
     private readonly WIDTH = 20;
     private readonly HEIGHT = 20;
     private readonly SCALE: number;
-
     private readonly fps: number = 4;
     private readonly fpsInterval: number = 1000/this.fps;
+    
+    // FPS calculation
     private then: number;
     private now: number;
 
+    // General variables
     private snake: number[][];
     private headColour: string = "#1795bf";
     private bodyColour: string = "#3bb1d9";
@@ -28,22 +32,26 @@ class Game {
     private eaten: boolean = false;
     private score: number = 0;
 
+    // General constructor for class
     public constructor() {
         this.canvas = document.querySelector('canvas') as HTMLCanvasElement;
         this.ctx = this.canvas.getContext('2d');
         this.SCALE = this.canvas.height / this.HEIGHT;
 
+        // Make snake
         this.snake = [];
         for (let x = 0; x < 4; x++) {
             this.snake.push([Math.floor(this.WIDTH / 2) - x, Math.floor(this.HEIGHT / 2)])
         }
 
+        // Food and score
         this.food = [Math.floor(this.WIDTH / 2) + 4, Math.floor(this.HEIGHT / 2)];
-
         document.getElementById("score").innerText = `00000`;
 
+        // Initial draw
         this.draw();
 
+        // Binding functions (not all need but its easier to do all)
         this.run = this.run.bind(this);
         this.update = this.update.bind(this);
         this.draw = this.draw.bind(this);
@@ -55,16 +63,17 @@ class Game {
         this.handleReset = this.handleReset.bind(this);
         this.handleStart = this.handleStart.bind(this);
 
+        // Listeners
         window.addEventListener("keydown", this.handleKey, true);
         document.getElementById("reset").addEventListener("click", this.handleReset);
         document.getElementById("start").addEventListener("click", this.handleStart);
         
+        // Actual running
         this.then = performance.now();
         this.run()
-
-        // setInterval(this.run, 250);
     }
 
+    // Function for handling losing
     private lose() {
         this.alive = false;
         this.headColour = "#e30b1e";
@@ -72,11 +81,16 @@ class Game {
         this.draw();
     }
 
+    // Function for handling winning
     private win() {
         this.alive = false;
+        this.headColour = "#10de40";
+        this.bodyColour = "#42f56c";
+        this.draw();
         alert("You win");
     }
 
+    // Resetting game (button)
     private handleReset() {
         if (!this.alive) {
             this.snake = [];
@@ -94,6 +108,7 @@ class Game {
         }
     }
 
+    // Start game (button)
     private handleStart() {
         if (!this.alive && this.resetted) {
             this.alive = true;
@@ -101,6 +116,7 @@ class Game {
         }
     }
 
+    // Running code + fps calculation
     private run() {
         requestAnimationFrame(this.run);
         this.now = performance.now();
@@ -115,6 +131,7 @@ class Game {
         }
     }
 
+    // General update code
     private update() {
         let direction = this.direction;
         let snake = this.snake;
@@ -178,6 +195,7 @@ class Game {
         }
     }
 
+    // Move food position (not the most efficient but it works)
     private moveFood() {
         this.food = [Math.floor(Math.random() * this.WIDTH), Math.floor(Math.random() * this.HEIGHT)];
         for (let i = 0; i < this.snake.length; i++) {
@@ -188,6 +206,7 @@ class Game {
         }
     }
 
+    // Drawing function
     private draw() {
         const ctx = this.ctx;
         const c = this.canvas;
@@ -214,6 +233,7 @@ class Game {
         this.drawGrid();
     }
 
+    // Draw the grid
     private drawGrid() {
         const ctx = this.ctx;
         const c = this.canvas;
@@ -237,17 +257,18 @@ class Game {
         ctx.stroke();
     }
 
+    // Updates the direction
     private updateDirection(newDir: Direction) {
         console.log(this.direction + newDir)
-        if (this.direction + newDir != 1 && this.direction + newDir != 5)
+        if (this.direction + newDir != 1 && this.direction + newDir != 5) // makes sure that you don't do back on yourself (moving right then hit left etc.)
             this.direction = newDir;
     }
 
+    // Key presses
     private handleKey(event) {
         if (event.defaultPrevented) {
             return;
         }
-
         switch (event.key) {
             case "ArrowDown":
                 this.updateDirection(Direction.Down);
