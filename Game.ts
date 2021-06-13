@@ -13,6 +13,11 @@ class Game {
     private readonly HEIGHT = 20;
     private readonly SCALE: number;
 
+    private readonly fps: number = 4;
+    private readonly fpsInterval: number = 1000/this.fps;
+    private then: number;
+    private now: number;
+
     private snake: number[][];
     private headColour: string = "#1795bf";
     private bodyColour: string = "#3bb1d9";
@@ -53,8 +58,11 @@ class Game {
         window.addEventListener("keydown", this.handleKey, true);
         document.getElementById("reset").addEventListener("click", this.handleReset);
         document.getElementById("start").addEventListener("click", this.handleStart);
+        
+        this.then = performance.now();
+        this.run()
 
-        setInterval(this.run, 250);
+        // setInterval(this.run, 250);
     }
 
     private lose() {
@@ -79,6 +87,7 @@ class Game {
             this.food = [Math.floor(this.WIDTH / 2) + 4, Math.floor(this.HEIGHT / 2)];
             this.headColour = "#1795bf";
             this.bodyColour = "#3bb1d9";
+            document.getElementById("score").innerText = `00000`;
             this.score = 0;
             this.draw();
             this.resetted = true;
@@ -93,10 +102,17 @@ class Game {
     }
 
     private run() {
-        if (this.alive)
-            this.update();
-        if (this.alive)
-            this.draw();
+        requestAnimationFrame(this.run);
+        this.now = performance.now();
+        let elapsed: number = this.now - this.then;
+
+        if (elapsed > this.fpsInterval) {
+            this.then = this.now - (elapsed % this.fpsInterval)
+            if (this.alive)
+                this.update();
+            if (this.alive)
+                this.draw();
+        }
     }
 
     private update() {
@@ -222,7 +238,9 @@ class Game {
     }
 
     private updateDirection(newDir: Direction) {
-        this.direction = newDir;
+        console.log(this.direction + newDir)
+        if (this.direction + newDir != 1 && this.direction + newDir != 5)
+            this.direction = newDir;
     }
 
     private handleKey(event) {
