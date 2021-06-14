@@ -1,5 +1,7 @@
 # Snake
 
+![Screenshot of the game](snake.png "Snake")
+
 ## Reasoning for project
 This is my version of Snake in TypeScript. I have never used TypeScript before and really wanted to learn it as it seems to combine what I enjoy about strongly typed languages with the capability of JavaScript.
 
