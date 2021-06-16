@@ -23,6 +23,7 @@ class Game {
 
     // General variables
     private snake: number[][];
+    private open: number[][];
     private headColour: string = "#1795bf";
     private bodyColour: string = "#3bb1d9";
     private food: number[];
@@ -47,6 +48,18 @@ class Game {
         // Food and score
         this.food = [Math.floor(this.WIDTH / 2) + 4, Math.floor(this.HEIGHT / 2)];
         document.getElementById("score").innerText = `00000`;
+
+        // Open spaces for food
+        this.open = [];
+        for (let x = 0; x < this.WIDTH; x++) {
+            for (let y = 0; y < this.HEIGHT; y++) {
+                this.open.push([x, y]);
+            }
+        }
+        // Remove used spaces
+        this.open.splice(this.open.indexOf(this.food), 1);
+        this.snake.forEach(pos => {this.open.splice(this.open.indexOf(pos), 1)});
+
 
         // Initial draw
         this.draw();
@@ -99,6 +112,14 @@ class Game {
             }
             this.direction = Direction.Right;
             this.food = [Math.floor(this.WIDTH / 2) + 4, Math.floor(this.HEIGHT / 2)];
+            this.open = [];
+            for (let x = 0; x < this.WIDTH; x++) {
+                for (let y = 0; y < this.HEIGHT; y++) {
+                    this.open.push([x, y]);
+                }
+            }
+            this.open.splice(this.open.indexOf(this.food), 1);
+            this.snake.forEach(pos => {this.open.splice(this.open.indexOf(pos), 1)});
             this.headColour = "#1795bf";
             this.bodyColour = "#3bb1d9";
             document.getElementById("score").innerText = `00000`;
@@ -136,29 +157,35 @@ class Game {
         let direction = this.direction;
         let snake = this.snake;
         let head = snake[0];
+        let open = this.open;
 
         // Move player
         switch (+direction) {
             case Direction.Right: {
                 snake.splice(0, 0, [head[0] + 1, head[1]]);
+                open.splice(open.indexOf([head[0] + 1, head[1]]), 1);
                 break;
             }
             case Direction.Left: {
                 snake.splice(0, 0, [head[0] - 1, head[1]]);
+                open.splice(open.indexOf([head[0] - 1, head[1]]), 1);
                 break;
             }
             case Direction.Up: {
                 snake.splice(0, 0, [head[0],  head[1] - 1]);
+                open.splice(open.indexOf([head[0],  head[1] - 1]), 1);
                 break;
             }
             case Direction.Down: {
                 snake.splice(0, 0, [head[0],  head[1] + 1]);
+                open.splice(open.indexOf([head[0],  head[1] + 1]), 1);
                 break;
             }
         }
 
         // Remove tail
         if (!this.eaten){
+            open.push(snake[-1]);
             snake.splice(-1, 1)
         }
         else {
@@ -195,15 +222,9 @@ class Game {
         }
     }
 
-    // Move food position (not the most efficient but it works)
+    // Move food position
     private moveFood() {
-        this.food = [Math.floor(Math.random() * this.WIDTH), Math.floor(Math.random() * this.HEIGHT)];
-        for (let i = 0; i < this.snake.length; i++) {
-            if (this.food[0] == this.snake[i][0] && this.food[1] == this.snake[i][1]) {
-                this.moveFood();
-                return;
-            }
-        }
+        this.food = this.open[Math.floor(Math.random() * this.open.length)];
     }
 
     // Drawing function
@@ -259,7 +280,6 @@ class Game {
 
     // Updates the direction
     private updateDirection(newDir: Direction) {
-        console.log(this.direction + newDir)
         if (this.direction + newDir != 1 && this.direction + newDir != 5) // makes sure that you don't do back on yourself (moving right then hit left etc.)
             this.direction = newDir;
     }
