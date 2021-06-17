@@ -51,15 +51,15 @@ class Game {
 
         // Open spaces for food
         this.open = [];
-        for (let x = 0; x < this.WIDTH; x++) {
-            for (let y = 0; y < this.HEIGHT; y++) {
+        for (let y = 0; y < this.HEIGHT; y++) {
+            for (let x = 0; x < this.WIDTH; x++) {
                 this.open.push([x, y]);
             }
         }
         // Remove used spaces
-        this.open.splice(this.open.indexOf(this.food), 1);
-        this.snake.forEach(pos => {this.open.splice(this.open.indexOf(pos), 1)});
-
+        for (let i = 0; i < this.snake.length; i++) {
+            this.open.splice(this.snake[i][1] * this.WIDTH + this.snake[i][0], 1);
+        }
 
         // Initial draw
         this.draw();
@@ -118,8 +118,9 @@ class Game {
                     this.open.push([x, y]);
                 }
             }
-            this.open.splice(this.open.indexOf(this.food), 1);
-            this.snake.forEach(pos => {this.open.splice(this.open.indexOf(pos), 1)});
+            for (let i = 0; i < this.snake.length; i++) {
+                this.open.splice(this.snake[i][1] * this.WIDTH + this.snake[i][0], 1);
+            }
             this.headColour = "#1795bf";
             this.bodyColour = "#3bb1d9";
             document.getElementById("score").innerText = `00000`;
